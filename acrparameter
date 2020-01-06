@@ -1,0 +1,43 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"registryName": {
+			"value": "acrrac"
+		},
+		"storageAccount": {
+			"value": {
+				"id": "dfsfv"
+			}
+		},
+		"networkRuleSet": {
+			"value": {
+				"defaultAction": "Allow",
+				"virtualNetworkRules": [{
+                    "action": "Allow",
+                    "id":"/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/virtualNetworks/{vnetName}/subnets/{subnetName}."
+				}],
+				"ipRules": {
+					"value": [{
+						"action": "Allow"
+					}]
+				}
+			}
+		},
+		"policies": {
+			"value": {
+				"quarantinePolicy": {
+					"status": "Allow"
+				},
+				"trustPolicy": {
+					"type": "Notary",
+					"status": "Allow"
+				},
+				"retentionPolicy": {
+					"days": 7,
+					"status": "Allow"
+				}
+			}
+		}
+	}
+}
