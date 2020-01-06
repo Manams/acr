@@ -1,0 +1,90 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"registryName": {
+			"type": "string",
+			"metadata": {
+				"description": "The name of the container registry."
+			}
+		},
+		"registrySku": {
+			"type": "string",
+			"defaultValue": "Standard",
+			"metadata": {
+				"description": "The SKU of the container registry."
+			},
+			"allowedValues": [
+				"Basic",
+				"Standard",
+				"Premium"
+			]
+		},
+		"adminUserEnabled": {
+			"type": "bool",
+			"defaultValue": false,
+			"metadata": {
+				"description": "The value that indicates whether the admin user is enabled."
+			}
+		},
+		"storageAccount": {
+			"type": "string"
+		},
+		"networkRuleSet": {
+			"type": "string"
+		},
+		"policies": {
+			"type": "string"
+		}
+	},
+	"variables": {
+		"storageAccount": {
+			"id": "[parameters('storageAccount')]"
+		},
+		"networkRuleSet": {
+			"defaultAction": "[parameters('networkRuleSet')]",
+			"virtualNetworkRules": [{
+				"action": "[parameters('networkRuleSet')]",
+				"id": "[parameters('networkRuleSet')]"
+			}],
+			"ipRules": {
+				"action": "[parameters('networkRuleSet')]",
+				"value": "[parameters('networkRuleSet')]"
+			}
+		},
+		"policies": {
+			"quarantinePolicy": {
+				"value": "[parameters('policies')]"
+			},
+			"trustPolicy": {
+				"value": "[parameters('policies')]"
+			},
+			"retentionPolicy": {
+				"value": "[parameters('policies')]"
+			}
+		},
+		"acrproperties": {
+			"adminUserEnabled": "[parameters('adminuserenabled')]",
+			"storageAccount": "[variables('storageAccount')]",
+			"networkRuleSet": "[variables('networkRuleSet')]",
+			"policies": "[variables('policies')]"
+		},
+		"resources": [{
+			"name": "[parameters('registryName')]",
+			"type": "Microsoft.ContainerRegistry/registries",
+			"location": "[resourcegroup().location]",
+			"apiVersion": "2017-10-01",
+			"tags": {},
+			"sku": {
+				"name": "[parameters('registrySku')]"
+			},
+			"properties": "[variables('acrproperties')]"
+		}],
+		"outputs": {
+			"registryName": {
+				"type": "string",
+				"value": "[parameters('registryName')]"
+			}
+		}
+	}
+}
